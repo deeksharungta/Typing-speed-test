@@ -44,8 +44,10 @@ def custom_dialog_box():
         btn = Button(base, text="press space", width=50, font="calibri 15 bold", command=exit)
         btn.pack(side=BOTTOM, padx=20, pady=20)
 
+
 def counter_label(lbl):
     def count():
+        global running
         if running:
             global counter
             if counter == -1:
@@ -59,6 +61,9 @@ def counter_label(lbl):
 
             lbl.after(1000, count)
             counter += 1
+
+        if counter == 121:
+            running = False
 
     count()
 
@@ -139,6 +144,7 @@ lbl = Label(
     fg="black",
     font="Verdana 15 bold"
 )
+
 counter_label(lbl)
 lbl.place(x=175, y=251)
 

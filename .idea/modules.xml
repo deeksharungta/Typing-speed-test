@@ -3,6 +3,7 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/.idea/Typing tester.iml" filepath="$PROJECT_DIR$/.idea/Typing tester.iml" />
+      <module fileurl="file://$PROJECT_DIR$/../Projects/typing speed tester/.idea/typing speed tester.iml" filepath="$PROJECT_DIR$/../Projects/typing speed tester/.idea/typing speed tester.iml" />
     </modules>
   </component>
 </project>
