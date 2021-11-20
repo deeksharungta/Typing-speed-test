@@ -5,6 +5,8 @@ import keyboard
 counter = 0
 running = False
 keypressed = 0
+wpm = 0
+accuracy = 0
 
 instruction = (
     "************** WELCOME TO TYPING MASTER **************\n\nKindly go through the instructions below: \n\n"
@@ -47,6 +49,18 @@ def restarting(events):
     else:
         lbl['text'] = ''
 
+    # restart time
+    global keypressed
+    keypressed = 0
+    input_text.bind('<Key>', key)
+
+    check_input(input_text, words_text)
+
+    global wpm, accuracy
+    wpm = 0
+    accuracy = 0
+
+
 
 def exiting(events):
     """function to exit the typing master"""
@@ -54,19 +68,25 @@ def exiting(events):
     quit()
 
 
+
 def custom_dialog_box():
     """function to print time"""
+
     base = Toplevel(root)
     base.geometry("600x400+400+200")
     base.title("Instruction")
+    base.focus()
+
+    def exit_instr(event):
+        base.destroy()
 
     dialog_f = Frame(base)
     dialog_m = Message(dialog_f, text=instruction, bg="#9575CD", fg="floralwhite", font="calibri 15 bold", width='580')
     dialog_f.pack()
     dialog_m.pack(side=LEFT)
-    btn = Button(base, text="PRESS SPACE TO PROCEED", width=50, font="calibri 15 bold", command=exit)
+    btn = Button(base, text="PRESS SPACE TO PROCEED", width=50, font="calibri 15 bold", command=base.destroy)
     btn.pack(side=BOTTOM, padx=20, pady=20)
-
+    base.bind('<space>', exit_instr)
 
 def counter_label(lbl):
     def count():
@@ -104,14 +124,22 @@ def check(written, words_text):
 
 # function to calculate wpm and print it
 def check_input(write, words_text):
+    global wpm, accuracy
+
     written = write.get("1.0", "end-1c")
     written = written.split()
-    wpm = len(written) / (counter / 60)
-    if wpm != 0:
+    if counter != 0:
+        wpm = len(written) / (counter / 60)
         accuracy = check(written, words_text)
         accuracy = str(accuracy) + "%"
         lbl_wpm = Label(can_widget, text=round(wpm), font="comicsans 15 bold")
         lbl_acc = Label(can_widget, text=accuracy, font="comicsans 15 bold")
+
+    else:
+        lbl_wpm = Label(can_widget, text="00", font="comicsans 15 bold")
+        lbl_acc = Label(can_widget, text="00 %", font="comicsans 15 bold")
+
+    if wpm != 0:
         lbl_wpm.place(x=100, y=150)
         lbl_acc.place(x=50, y=250)
 
@@ -178,7 +206,6 @@ lbl = Label(
 input_text.bind('<Key>', key)
 
 lbl.place(x=175, y=251)
-print(running)
 words_text = story.split()
 
 root.after(10, custom_dialog_box)
