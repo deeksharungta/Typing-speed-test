@@ -1,29 +1,44 @@
 from tkinter import *
 import random
-import time
-import datetime
 
-
-counter = -1
+counter = 0
 running = False
+keypressed = 0
 
 instruction = (
             "1. Welcome to Typing master\n"
             "2.This is an app to test your typing speed\n"
             "3. It is recommended that you should not correct the words after pressing space\n")
 
+
+
 root = Tk()
 
 with open("typing_story.txt", "r") as file:
     allText = file.read()
-    story = list(map(str, allText.split('\n')))
+    para = list(map(str, allText.split('\n')))
 
+
+def key(event):
+    global keypressed
+    keypressed += 1
+    if keypressed == 1:
+        global running
+        running = True
+        counter_label(lbl)
 
 def restarting(events):
     """function to restart the typing master"""
 
     print("Restarting...")
     input_text.delete("1.0", "end")
+
+    global counter
+    counter = 0
+    if running == False:
+        lbl['text'] = '00'
+    else:
+        lbl['text'] = ''
 
 
 def exiting(events):
@@ -44,13 +59,12 @@ def custom_dialog_box():
         btn = Button(base, text="press space", width=50, font="calibri 15 bold", command=exit)
         btn.pack(side=BOTTOM, padx=20, pady=20)
 
-
 def counter_label(lbl):
     def count():
         global running
         if running:
             global counter
-            if counter == -1:
+            if counter == 0:
                 display = "0"
             else:
                 display = str(counter)
@@ -62,8 +76,8 @@ def counter_label(lbl):
             lbl.after(1000, count)
             counter += 1
 
-        if counter == 121:
-            running = False
+            if counter == 120:
+                running = False
 
     count()
 
@@ -80,14 +94,17 @@ def check_input(write, words_text):
     written = write.get("1.0", "end-1c")
     written = written.split()
     wpm = len(written)
+    accuracy = 0
     if wpm != 0:
         accuracy = check(written, words_text)
+    lbl_acc = Label(can_widget, text=accuracy, font="comicsans 15 bold")
+    lbl_acc.place(x=50, y=250)
 
 # setting the tkinter window
 root.geometry("1000x600+300+100")
 
 root.title("Typing tester")
-
+root.resizable(0, 0)
 
 # the heading or name of the the application
 l1 = Label(root, text="Typing Speed Tester", font="comicsans 15 bold")
@@ -95,7 +112,8 @@ l1.place(x=450, y=10)
 
 # message or paragraph
 f1 = Frame(root, bg="red", borderwidth=3)
-m1 = Message(f1, text=random.choice(story), fg="black", font="calibri 15 bold", width='540')
+story = random.choice(para)
+m1 = Message(f1, text=story, fg="black", font="calibri 15 bold", width='540')
 f1.place(x=50, y=45)
 m1.pack()
 
@@ -137,16 +155,19 @@ delete.bind('<Button-1>', exiting)
 
 can_widget.create_text(200, 430, text="exit", font="calibri 12 bold")
 
-running = True
 lbl = Label(
     can_widget,
     text="00",
     fg="black",
     font="Verdana 15 bold"
 )
+input_text.bind('<Key>', key)
 
-counter_label(lbl)
 lbl.place(x=175, y=251)
+print(running)
+words_text = story.split()
+
+check_input(input_text, words_text)
 
 root.after(10, custom_dialog_box)
 root.mainloop()
