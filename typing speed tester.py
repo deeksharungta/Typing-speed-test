@@ -2,6 +2,7 @@ from tkinter import *
 import random
 import keyboard
 
+# global variables
 counter = 0
 running = False
 keypressed = 0
@@ -9,7 +10,7 @@ wpm = 0
 accuracy = 0
 
 instruction = (
-    "************** WELCOME TO TYPING MASTER **************\n\nKindly go through the instructions below: \n\n"
+    "*************** WELCOME TO TYPING MASTER ***************\n\nKindly go through the instructions below: \n\n"
     "1. This is an app to test your typing speed.\n"
     "2. It is recommended that you should not correct the words after pressing space.\n"
     "3. The timer will start when you enter your first character in the input box.\n"
@@ -24,6 +25,7 @@ with open("typing_story.txt", "r") as file:
     para = list(map(str, allText.split('\n')))
 
 
+# function to handle key event
 def key(event):
     global keypressed
     global running
@@ -36,9 +38,8 @@ def key(event):
         check_input(input_text, words_text)
 
 
+# function to restart
 def restarting(events):
-    """function to restart the typing master"""
-
     print("Restarting...")
     input_text.delete("1.0", "end")
 
@@ -61,33 +62,35 @@ def restarting(events):
     accuracy = 0
 
 
-
+# function to exit
 def exiting(events):
-    """function to exit the typing master"""
     print("Exiting...")
     quit()
 
 
-
+# function to print time
 def custom_dialog_box():
-    """function to print time"""
-
     base = Toplevel(root)
     base.geometry("600x400+400+200")
     base.title("Instruction")
     base.focus()
 
+    # function to exit instructions dialog box
     def exit_instr(event):
         base.destroy()
 
+    # instructions dialog box
     dialog_f = Frame(base)
-    dialog_m = Message(dialog_f, text=instruction, bg="#9575CD", fg="floralwhite", font="calibri 15 bold", width='580')
+    dialog_m = Message(dialog_f, text=instruction, bg="#2A2A42", fg="floralwhite", font="roboto 15 bold", width='580')
     dialog_f.pack()
     dialog_m.pack(side=LEFT)
-    btn = Button(base, text="PRESS SPACE TO PROCEED", width=50, font="calibri 15 bold", command=base.destroy)
-    btn.pack(side=BOTTOM, padx=20, pady=20)
+    btn = Button(base, text="CLICK HERE OR PRESS SPACE TO PROCEED", width=50, bg="red", fg="floralwhite",
+                 font="raleway 15 bold", relief="groove", command=base.destroy)
+    btn.pack(side=BOTTOM, padx=20, pady=10)
     base.bind('<space>', exit_instr)
 
+
+# function for incrementing the timer
 def counter_label(lbl):
     def count():
         global counter
@@ -132,81 +135,75 @@ def check_input(write, words_text):
         wpm = len(written) / (counter / 60)
         accuracy = check(written, words_text)
         accuracy = str(accuracy) + "%"
-        lbl_wpm = Label(can_widget, text=round(wpm), font="comicsans 15 bold")
-        lbl_acc = Label(can_widget, text=accuracy, font="comicsans 15 bold")
+        lbl_wpm = Label(canvas, text=round(wpm), font="roboto 20 bold")
+        lbl_acc = Label(canvas, text=accuracy, font="roboto 20 bold")
 
     else:
-        lbl_wpm = Label(can_widget, text="00", font="comicsans 15 bold")
-        lbl_acc = Label(can_widget, text="00 %", font="comicsans 15 bold")
+        lbl_wpm = Label(canvas, text="00", font="roboto 20 bold")
+        lbl_acc = Label(canvas, text="0%", font="roboto 20 bold")
 
     if wpm != 0:
-        lbl_wpm.place(x=100, y=150)
-        lbl_acc.place(x=50, y=250)
+        lbl_wpm.place(x=855, y=305)
+        lbl_acc.place(x=705, y=305)
 
 
 # setting the tkinter window
 root.geometry("1000x600+300+100")
 root.title("Typing Speed Test")
 root.resizable(0, 0)
+bg_image = PhotoImage(file="images/background.png")
+canvas = Canvas(root, width=1000, height=600)
+canvas.pack(fill="both", expand=True)
+canvas.create_image(0, 0, image=bg_image, anchor="nw")
 
 # the heading or name of the the application
-l1 = Label(root, text="Typing Master", font="comicsans 15 bold")
-l1.pack()
+canvas.create_text(500, 20, text="TYPING MASTER", fill="white", font="raleway 20 bold")
+canvas.pack()
 
 # message or paragraph
-f1 = Frame(root, bg="red", borderwidth=3)
+f1 = Frame(root)
 story = random.choice(para)
-m1 = Message(f1, text=story, fg="black", font="calibri 15 bold", width='540')
+m1 = Message(f1, text=story, fg="black", font="roboto 15", width='540')
 words_text = story.split()
-f1.place(x=50, y=45)
+f1.place(x=50, y=55)
 m1.pack()
 
 # text area to type
-f2 = Frame(root, bg="red", borderwidth=4, relief=SUNKEN)
-f2.place(x=50, y=330)
-input_text = Text(f2, width=54, height=10, font="calibri 15 bold", wrap="word")
+f2 = Frame(root, relief=SUNKEN)
+f2.place(x=50, y=315)
+input_text = Text(f2, width=50, height=10, font="roboto 15", wrap="word")
 input_text.pack()
 
-# initializing canvas
-can_widget = Canvas(root, width=300, height=500, bg="white")
-can_widget.place(x=650, y=55)
-
 # rectangle for words per min
-can_widget.create_rectangle(95, 150, 155, 180, outline="black", width=2)
-can_widget.create_text(175, 165, text="wpm", font="calibri 12 bold")
+canvas.create_rectangle(750, 120, 850, 170, fill="white", width=2)
+canvas.create_text(800, 185, text="TIME", fill="white", font="roboto 15 bold")
 
 # rectangle for accuracy
-can_widget.create_rectangle(40, 250, 100, 280, outline="black", width=2)
-can_widget.create_text(70, 293, text="Accuracy", font="calibri 12 bold")
+canvas.create_rectangle(675, 300, 775, 350, fill="white", width=2)
+canvas.create_text(725, 365, text="ACCURACY", fill="white", font="roboto 15 bold")
 
 # rectangle for time
-can_widget.create_rectangle(170, 250, 230, 283, outline="black", width=2)
-can_widget.create_text(193, 293, text="Time", font="calibri 12 bold")
+canvas.create_rectangle(825, 300, 925, 350, fill="white", width=2)
+canvas.create_text(875, 365, text="WPM", fill="white", font="roboto 15 bold")
 
 # restart icon
 restart_img = PhotoImage(file="images/restart-icon.png")
-restart = Label(can_widget, image=restart_img)
-restart.place(x=30, y=370)
+restart = Label(canvas, image=restart_img)
+restart.place(x=710, y=450)
 restart.bind('<Button-1>', restarting)
-can_widget.create_text(50, 430, text="Restart", font="calibri 12 bold")
+canvas.create_text(730, 510, text="Restart", fill="white", font="roboto 15 bold")
 
 # delete icon
 delete_img = PhotoImage(file="images/delete-icon.png")
-delete = Label(can_widget, image=delete_img)
-delete.place(x=170, y=370)
+delete = Label(canvas, image=delete_img)
+delete.place(x=860, y=450)
 delete.bind('<Button-1>', exiting)
-can_widget.create_text(200, 430, text="Exit", font="calibri 12 bold")
+canvas.create_text(880, 510, text="Exit", fill="white", font="roboto 15 bold")
 
-lbl = Label(
-    can_widget,
-    text="00",
-    fg="black",
-    font="Verdana 15 bold"
-)
+lbl = Label(canvas, text="00", fg="black", font="roboto 20 bold")
 input_text.bind('<Key>', key)
 
-lbl.place(x=175, y=251)
-words_text = story.split()
+lbl.place(x=780, y=125, )
 
 root.after(10, custom_dialog_box)
 root.mainloop()
