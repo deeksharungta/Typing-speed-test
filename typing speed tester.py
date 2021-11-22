@@ -148,7 +148,6 @@ def check_input(write, words_text):
         lbl_acc.place(x=690, y=305, width=80)
 
 
-
 # setting the tkinter window
 root.geometry("1000x600+300+100")
 root.title("Typing Speed Test")
