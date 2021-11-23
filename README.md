@@ -1,6 +1,6 @@
 # Typing-speed-test
 
-The most accurate typing text in town!
+**The most accurate typing text in town!**
 
 Instructions:
 
