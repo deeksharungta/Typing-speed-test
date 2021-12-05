@@ -18,11 +18,12 @@ instruction = (
     "5. You can see the result on the right side of the window.\n\n"
     "Note : Typing Master will automatically submit after 2 minutes.")
 
-root = Tk()
-
 with open("typing_story.txt", "r") as file:
     allText = file.read()
     para = list(map(str, allText.split('\n')))
+
+story = random.choice(para)
+root = Tk()
 
 
 # function to handle key event
@@ -61,6 +62,9 @@ def restarting(events):
     wpm = 0
     accuracy = 0
 
+    global story
+    story = random.choice(para)
+    story_block(story)
 
 # function to exit
 def exiting(events):
@@ -147,6 +151,13 @@ def check_input(write, words_text):
         lbl_wpm.place(x=855, y=305)
         lbl_acc.place(x=690, y=305, width=80)
 
+# message or paragraph
+def story_block(story):
+    f1 = Frame(root)
+    m1 = Message(f1, text=story, fg="black", font="roboto 15", width='540')
+
+    f1.place(x=50, y=55)
+    m1.pack()
 
 
 # setting the tkinter window
@@ -162,13 +173,9 @@ canvas.create_image(0, 0, image=bg_image, anchor="nw")
 canvas.create_text(500, 20, text="TYPING MASTER", fill="white", font="raleway 20 bold")
 canvas.pack()
 
-# message or paragraph
-f1 = Frame(root)
-story = random.choice(para)
-m1 = Message(f1, text=story, fg="black", font="roboto 15", width='540')
+# calling function for writing para
+story_block(story)
 words_text = story.split()
-f1.place(x=50, y=55)
-m1.pack()
 
 # text area to type
 f2 = Frame(root, relief=SUNKEN)
